@@ -106,4 +106,17 @@ def create_payment_plan(account_id: int, due_date: str, amount_due: float, paid:
     db.commit()
     db.refresh(new_payment_plan)
     return new_payment_plan
+# Tüm Hesapları Listeleme (GET)
+@app.get("/accounts/")
+def get_accounts(db: Session = Depends(get_db)):
+    return db.query(models.Account).all()
+
+# Yeni Hesap Ekleme (POST)
+@app.post("/accounts/")
+def create_account(customer_name: str, balance: float = 0.0, credit_limit: float = 0.0, db: Session = Depends(get_db)):
+    new_account = models.Account(customer_name=customer_name, balance=balance, credit_limit=credit_limit)
+    db.add(new_account)
+    db.commit()
+    db.refresh(new_account)
+    return new_account
 
