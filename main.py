@@ -93,3 +93,17 @@ def pay_due(account_id: int, amount: float, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(account)
     return {"message": "Vade ödemesi gerçekleştirildi", "account_balance": account.balance}
+
+# Yeni Ödeme Planı Oluşturma Endpoint'i
+@app.post("/payment-plans/")
+def create_payment_plan(account_id: int, due_date: str, amount_due: float, paid: bool = False, db: Session = Depends(get_db)):
+    account = db.query(models.Account).filter(models.Account.id == account_id).first()
+    if not account:
+        raise HTTPException(status_code=404, detail="Cari hesap bulunamadı")
+
+    new_payment_plan = models.PaymentPlan(account_id=account_id, due_date=due_date, amount_due=amount_due, paid=paid)
+    db.add(new_payment_plan)
+    db.commit()
+    db.refresh(new_payment_plan)
+    return new_payment_plan
+
