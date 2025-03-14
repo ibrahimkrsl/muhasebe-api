@@ -43,4 +43,5 @@ class Transaction(Base):
     description = Column(String)
     date = Column(DateTime, default=datetime.utcnow)
     
-    user_id = Column(
+    user_id = Column(Integer, ForeignKey("users.id"))
+
