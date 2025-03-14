@@ -31,4 +31,16 @@ class Account(Base):
 
     user = relationship("User", back_populates="accounts")  # Kullanıcı ile ilişki
     transactions = relationship("Transaction", back_populates="account", cascade="all, delete")
-   
+    invoices = relationship("Invoice", back_populates="account", cascade="all, delete")
+    payment_plans = relationship("PaymentPlan", back_populates="account", cascade="all, delete")
+
+# Gelir/Gider Modeli
+class Transaction(Base):
+    __tablename__ = "transactions"
+    id = Column(Integer, primary_key=True, index=True)
+    amount = Column(Float, nullable=False)
+    type = Column(String, nullable=False)  # "income" veya "expense"
+    description = Column(String)
+    date = Column(DateTime, default=datetime.utcnow)
+    
+    user_id = Column(

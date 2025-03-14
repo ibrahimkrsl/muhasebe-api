@@ -1,16 +1,16 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import engine, get_db  # SADECE DATABASE'DEN IMPORT EDİLDİ
-import models  # MODELLER DOĞRU ŞEKİLDE IMPORT EDİLDİ
+from database import engine, get_db  # Veritabanı bağlantısı
+import models  # Modelleri içe aktarıyoruz
 from datetime import datetime
 
-# FastAPI Uygulaması
+# FastAPI uygulaması
 app = FastAPI()
 
-# Veritabanını oluştur
+# Veritabanı tablolarını oluştur
 models.Base.metadata.create_all(bind=engine)
 
-# Kullanıcı Modeli
+# Kullanıcı oluşturma endpoint'i
 @app.post("/users/")
 def create_user(username: str, password: str, role: str = "user", db: Session = Depends(get_db)):
     new_user = models.User(username=username, password=password, role=role)
@@ -92,4 +92,4 @@ def pay_due(account_id: int, amount: float, db: Session = Depends(get_db)):
     account.balance += amount  # Ödeme yapıldığı için bakiye artar
     db.commit()
     db.refresh(account)
-    return {"message": "Vade ödemesi gerçekleştirildi", "account_balance": account.balance}"}
+    return {"message": "Vade ödemesi gerçekleştirildi", "account_balance": account.balance}
